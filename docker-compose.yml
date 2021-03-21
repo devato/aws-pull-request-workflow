@@ -1,0 +1,27 @@
+version: '3.6'
+services:
+  db:
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_HOST_AUTH_METHOD: trust
+    image: postgres:alpine
+    restart: always
+    volumes:
+      - 'pgdata:/var/lib/postgresql/data'
+  test:
+    build:
+      context: .
+    command: mix do deps.get, test
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_HOST=db
+      - MIX_ENV=test
+    volumes:
+      - .:/app
+    links:
+      - db
+volumes:
+  pgdata:

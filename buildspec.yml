@@ -1,0 +1,35 @@
+version: 0.2
+env:
+  variables:
+    AWS_DEFAULT_REGION: "us-east-1"
+    MIX_ENV: "test"
+phases:
+  install:
+    commands:
+      - BUILD_NAME=$(echo $CODEBUILD_BUILD_ID | cut -d':' -f1)
+      - BUILD_ID=$(echo $CODEBUILD_BUILD_ID | cut -d':' -f2)
+      - BUILD_URL=$(echo "https://$AWS_DEFAULT_REGION.console.aws.amazon.com/codesuite/codebuild/projects/$BUILD_NAME/build/$BUILD_NAME%3A$BUILD_ID")
+  pre_build:
+    commands:
+      - echo "Revoking approval"
+      - aws codecommit update-pull-request-approval-state --pull-request-id $PULL_REQUEST_ID --approval-state REVOKE --revision-id $REVISION_ID;
+      - echo "Checkout code"
+      - git checkout $SOURCE_COMMIT
+  build:
+    commands:
+      - docker-compose --env MIX_ENV=test run --rm test
+  post_build:
+    commands:
+      - |
+        if [ $CODEBUILD_BUILD_SUCCEEDING = 1 ]; then
+          aws codecommit update-pull-request-approval-state --pull-request-id $PULL_REQUEST_ID --approval-state APPROVE --revision-id $REVISION_ID;
+          content="✔️  Pull request build SUCCEEDED! ![View Build]($BUILD_URL)"
+        else
+          content="❌ Pull request build FAILED ![View Build]($BUILD_URL)"
+        fi
+      - aws codecommit post-comment-for-pull-request --pull-request-id $PULL_REQUEST_ID --repository-name $REPOSITORY_NAME --before-commit-id $DESTINATION_COMMIT --after-commit-id $SOURCE_COMMIT --content "$content"
+
+# TODO: determine what to cache etc for builds across different branches.
+# cache:
+#   paths:
+#     - "$CODEBUILD_SRC_DIR/deps"
