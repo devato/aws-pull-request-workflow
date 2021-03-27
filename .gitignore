@@ -38,3 +38,4 @@ npm-debug.log
 *.tfstate.*
 *.terraform.lock.hcl
 *.tfvars
+.env*
