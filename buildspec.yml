@@ -33,4 +33,4 @@ phases:
 # - something else
 cache:
   paths:
-    - "$CODEBUILD_SRC_DIR/_build"
+    - "$CODEBUILD_SRC_DIR/deps"
