@@ -29,8 +29,3 @@ phases:
         fi
       - aws codecommit post-comment-for-pull-request --pull-request-id $PULL_REQUEST_ID --repository-name $REPOSITORY_NAME --before-commit-id $DESTINATION_COMMIT --after-commit-id $SOURCE_COMMIT --content "$content"
 
-# TODO: determine what to cache etc for builds across different branches.
-# - something else
-cache:
-  paths:
-    - "$CODEBUILD_SRC_DIR/deps"
