@@ -29,3 +29,8 @@ phases:
         fi
       - aws codecommit post-comment-for-pull-request --pull-request-id $PULL_REQUEST_ID --repository-name $REPOSITORY_NAME --before-commit-id $DESTINATION_COMMIT --after-commit-id $SOURCE_COMMIT --content "$content"
 
+reports:
+  coverage-report:
+    files:
+      - 'cover/excoveralls.json'
+    file-format: 'SIMPLECOV'

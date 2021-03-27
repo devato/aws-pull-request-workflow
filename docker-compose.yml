@@ -13,7 +13,7 @@ services:
   test:
     build:
       context: .
-    command: mix do deps.get, test
+    command: mix do deps.get, coveralls.json
     environment:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_USER=postgres
