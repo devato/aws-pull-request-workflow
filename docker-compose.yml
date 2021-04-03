@@ -8,8 +8,8 @@ services:
       POSTGRES_HOST_AUTH_METHOD: trust
     image: postgres:alpine
     restart: always
-    volumes:
-      - 'pgdata:/var/lib/postgresql/data'
+    # volumes:
+    #   - 'pgdata:/var/lib/postgresql/data'
   test:
     build:
       context: .
@@ -23,5 +23,3 @@ services:
       - .:/app
     links:
       - db
-volumes:
-  pgdata:

@@ -1,0 +1,18 @@
+version: 0.2
+env:
+  variables:
+    AWS_DEFAULT_REGION: "us-east-1"
+    MIX_ENV: "test"
+phases:
+  install:
+    commands:
+      - echo "install"
+  pre_build:
+    commands:
+      - git checkout $SOURCE_COMMIT
+  build:
+    commands:
+      - docker-compose -f docker-compose.yml run --rm test
+  post_build:
+    commands:
+      - echo "post_build"
